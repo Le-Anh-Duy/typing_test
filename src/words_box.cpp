@@ -9,16 +9,22 @@ void words_box::add_word(string word) {
     words.push_back(ans);
 }
 
-void words_box::put_word(string word, int index) {
+int words_box::put_word(string word, int index) {
     while (word.size() < words[index].size()) word += ' ';
+
+    int correct = 0;
+
     for (int i = 0; i < words[index].size(); i ++) {
         if (words[index][i].ch != word[i]) {
             words[index][i].colorCode = RED;
         } else {
             words[index][i].colorCode = GREEN;
+            correct ++;
         }
     }
     current_index ++;
+
+    return correct;
 }
 
 void words_box::show_words() {

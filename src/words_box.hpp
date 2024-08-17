@@ -19,6 +19,6 @@ public:
     // add a word in words list
     void add_word(string word);
     // put the inputed word to check with the ans
-    void put_word(string word, int index);
+    int put_word(string word, int index);
     void show_words();
 };

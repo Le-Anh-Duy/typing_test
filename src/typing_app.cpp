@@ -5,6 +5,7 @@
 #include <random>
 #include <time.h>
 #include <fstream>
+#include <time.h>
 
 int curX = 0, curY = 0;
 
@@ -43,7 +44,7 @@ int wherey()
     return result.Y;
 }
 
-string keyboard_get() {
+string keyboard_get(app* myApp) {
     string ans = "";
     while (true) {
         char ch = _getch();
@@ -57,6 +58,11 @@ string keyboard_get() {
             continue;
         }
 
+        if (!myApp->getRunning()) {
+            myApp->setRunning();
+            myApp->setCounter();
+        }
+
         if (ch == ' ') {
             return ans;
         } else
@@ -67,8 +73,21 @@ string keyboard_get() {
     return ans;
 }
 
+bool app::getRunning() {
+    return isRunning;
+}
+
+
+void app::setCounter() {
+    enlapsedTime = clock();
+}
+
+void app::setRunning() {
+    isRunning = true;
+}
 
 app::app() {
+    isRunning = false;
     writen_words = 0;
     wordsBox = new words_box();
 }
@@ -130,6 +149,8 @@ void app::run() {
 
     wordsBox->show_words();
 
+    int totalCorrect = 0;
+
     for (int i = 0; i < wordsBox->words.size(); i ++) {
         gotoxy(curX, curY);
 
@@ -137,11 +158,18 @@ void app::run() {
             ch.colorCode = YELLOW;
         wordsBox->show_words();
         cout << "Type here: ";
-        string type = keyboard_get();
+        string type = keyboard_get(this);
 
-        wordsBox->put_word(type, i);
+        totalCorrect += wordsBox->put_word(type, i);
         system("cls");
         wordsBox->show_words();
     }
+
+    clock_t timePassed = clock() - enlapsedTime;
+    float second =  (float) timePassed / CLOCKS_PER_SEC;
+
+    int wpm = (float) totalCorrect / 5.0 / second  * 60.0;
+
+    cout << '\n' << wpm << " WPM" << '\n';
 
 }
